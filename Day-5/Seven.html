@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Route Sample</title>
+    <script src="../scripts/angular.js"></script>
+    <script src="../scripts/angular-ui-router.js"></script>
+    <title></title>
+</head>
+<body ng-app="myApp">
+<div ng-controller="myCtrl1">
+    <h1>Synerzip</h1>
+    <a ui-sref="state1">State1</a> |
+    <a ui-sref="state2">State2</a> |
+    <br/><br/>
+    <h3>Content</h3>
+    <div ui-view></div>
+    <h3>Footer</h3>
+</div>
+
+<script>
+    var app = angular.module('myApp', ['ui.router']);
+
+
+    app.factory("myService", [function(){
+        return {
+            items:[
+                'Name 1',
+                'Akshay'
+            ],
+            addName: function(name){
+                this.items.push(name);
+            }
+        }
+
+    }]);
+
+
+    app.controller('myCtrl1', ['$scope', 'myService', function($scope, myService){
+
+        /* $scope.names=[
+         'Name 1',
+         'Name 2'
+         ];*/
+
+        $scope.addMyName = function() {
+            // $scope.names.push($scope.name);
+            myService.addName($scope.name)
+            $scope.name = '';
+        };
+
+        $scope.names = myService.items;
+
+    }]);
+
+    app.controller('myCtrl2', ['$scope', '$filter', 'myService', function($scope2, $filter2, myService){
+
+        /* $scope.names=[
+         'Name 1',
+         'Name 2'
+         ];*/
+
+        $scope2.addMyName = function() {
+            // $scope.names.push($scope.name);
+            myService.addName($scope2.name)
+            $scope2.name = '';
+        };
+
+        $scope2.test = $filter2('capFilter')('It Works!!');
+
+        $scope2.names = myService.items;
+
+    }]);
+
+
+    app.filter('myFilter',[function(){
+        var filter = function(items){
+            var filtered = [];
+            for(var i=0; i<items.length; i++){
+                var item = items[i];
+                if(item.search(/day/) != -1){
+                    filtered.push(item);
+                }
+            }
+            return filtered;
+        }
+        return filter;
+    }]);
+
+    app.filter('myFilter2',[function(){
+        var filter = function(items){
+            var filtered = [];
+            for(var i=0; i<items.length; i++){
+                var item = items[i];
+                if(item.search(/on/) != -1){
+                    filtered.push(item);
+                }
+            }
+            return filtered;
+        }
+        return filter;
+    }]);
+
+    app.filter('capFilter', function(){
+        //return "test"; // filter always expects function
+        return function(text){
+            //return "onkar";
+            return text.toString().toUpperCase();
+        }
+    });
+
+    app.directive('myList',function(){
+       return {
+           template:'<ol>\
+                    <li ng-repeat="n in names" ng-bind="n"></li>' +
+                   '</ol>'
+           //templateUrl:'myListTemplate.html'
+       }
+    });
+
+    app.directive('myElement', function(){
+        return {
+            scope:{
+                myText:'=info'
+            },
+            template:'<span>Item - {{myText}}</span>'
+        }
+    });
+
+    app.config(function($stateProvider, $urlRouterProvider){
+        $urlRouterProvider.otherwise("/state1/list"); // by default route to state1
+
+        $stateProvider
+                .state('state1',{
+                    url:"/state1",
+                    templateUrl:"partials/state1.html"
+                })
+
+                .state('state1.list',{
+                    url:"/list",
+                    templateUrl:"partials/state1.list.html",
+                    controller:function($scope){
+                        $scope.items = ["item 1-1", "item 1-2", "item 1-3"]
+                    }
+                })
+
+                .state('state1.table',{
+                    url:"/table",
+                    templateUrl:"partials/state1.table.html",
+                    controller:function($scope){
+                        $scope.items = ["item 1-4", "item 1-5", "item 1-6"]
+                    }
+                })
+
+                .state('state1.dynamic',{
+                    url:"/dynamic/{id}",
+                    template:"<h1>This is dynamic {{text}}</h1>",
+                    controller:function($scope,$stateParams){
+                        $scope.text = $stateParams.id;
+                    }
+                })
+
+                .state('state2',{
+                    url:"/state2",
+                    templateUrl:"partials/state2.html"
+                })
+
+                .state('state2.list',{
+                    url:"/list",
+                    templateUrl:"partials/state2.list.html",
+                    controller:function($scope){
+                        //$scope.items = ["item 2-1", "item 2-2", "item 2-3"]
+                    }
+                })
+    });
+
+</script>
+</body>
+</html>

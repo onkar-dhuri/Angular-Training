@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Controller Sample</title>
+    <script src="../scripts/angular.js"></script>
+    <title></title>
+</head>
+<body ng-app="myApp">
+<div ng-controller="myCtrl1">
+    <input type="text" ng-model="name" placeholder="Enter Name" />
+    <button ng-click="addMyName()">Add</button>
+
+
+    <h1>Filtered List</h1>
+    <ol>
+        <li ng-repeat="n in names | myFilter | myFilter2">{{n | capFilter}}</li>
+    </ol>
+</div>
+
+<div ng-controller="myCtrl2">
+    <input type="text" ng-model="name" placeholder="Enter Name" />
+    <button ng-click="addMyName()">Add</button>
+
+    <br/>
+    {{test}}
+    <h1>Unfiltered List</h1>
+    <ol>
+        <li ng-repeat="n in names">{{n}}</li>
+    </ol>
+</div>
+<!-- If you use same controller then list is updated on both the views -->
+
+<script>
+    var app = angular.module('myApp', []);
+
+
+    app.factory("myService", [function(){
+        return {
+            items:[
+                'Name 1',
+                'Akshay'
+            ],
+            addName: function(name){
+                this.items.push(name);
+            }
+        }
+
+    }]);
+
+
+    app.controller('myCtrl1', ['$scope', 'myService', function($scope, myService){
+
+        /* $scope.names=[
+         'Name 1',
+         'Name 2'
+         ];*/
+
+        $scope.addMyName = function() {
+            // $scope.names.push($scope.name);
+            myService.addName($scope.name)
+            $scope.name = '';
+        };
+
+        $scope.names = myService.items;
+
+    }]);
+
+    app.controller('myCtrl2', ['$scope', '$filter', 'myService', function($scope2, $filter2, myService){
+
+        /* $scope.names=[
+         'Name 1',
+         'Name 2'
+         ];*/
+
+        $scope2.addMyName = function() {
+            // $scope.names.push($scope.name);
+            myService.addName($scope2.name)
+            $scope2.name = '';
+        };
+
+        $scope2.test = $filter2('capFilter')('It Works!!');
+
+        $scope2.names = myService.items;
+
+    }]);
+
+
+    app.filter('myFilter',[function(){
+        var filter = function(items){
+            var filtered = [];
+            for(var i=0; i<items.length; i++){
+                var item = items[i];
+                if(item.search(/day/) != -1){
+                    filtered.push(item);
+                }
+            }
+            return filtered;
+        }
+        return filter;
+    }]);
+
+    app.filter('myFilter2',[function(){
+        var filter = function(items){
+            var filtered = [];
+            for(var i=0; i<items.length; i++){
+                var item = items[i];
+                if(item.search(/on/) != -1){
+                    filtered.push(item);
+                }
+            }
+            return filtered;
+        }
+        return filter;
+    }]);
+
+    app.filter('capFilter', function(){
+        //return "test"; // filter always expects function
+        return function(text){
+            //return "onkar";
+            return text.toString().toUpperCase();
+        }
+    });
+
+</script>
+</body>
+</html>

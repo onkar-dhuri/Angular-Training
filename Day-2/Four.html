@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Controller Sample</title>
+    <script src="../scripts/angular.js"></script>
+    <title></title>
+</head>
+<body ng-app="myApp">
+<div ng-controller="myCtrl1">
+    <input type="text" ng-model="name" placeholder="Enter Name" />
+    <button ng-click="addMyName()">Add</button>
+
+
+    <h1>List</h1>
+    <ol>
+        <li ng-repeat="n in names">{{n}}</li>
+    </ol>
+</div>
+
+<div ng-controller="myCtrl2">
+    <input type="text" ng-model="name" placeholder="Enter Name" />
+    <button ng-click="addMyName()">Add</button>
+
+
+    <h1>List 2</h1>
+    <ol>
+        <li ng-repeat="n in names">{{n}}</li>
+    </ol>
+</div>
+<!-- If you use same controller then list is updated on both the views -->
+
+<script>
+    var app = angular.module('myApp', []);
+
+
+    app.factory("myService", [function(){
+        return {
+            items:[
+                    'Name 1',
+                    'Akshay'
+            ],
+            addName: function(name){
+                this.items.push(name);
+            }
+        }
+
+    }]);
+
+
+    app.controller('myCtrl1', ['$scope', 'myService', function($scope, myService){
+
+       /* $scope.names=[
+            'Name 1',
+            'Name 2'
+        ];*/
+
+        $scope.addMyName = function() {
+           // $scope.names.push($scope.name);
+            myService.addName($scope.name)
+            $scope.name = '';
+        };
+
+        $scope.names = myService.items;
+
+    }]);
+
+    app.controller('myCtrl2', ['$scope', 'myService', function($scope2, myService){
+
+        /* $scope.names=[
+         'Name 1',
+         'Name 2'
+         ];*/
+
+        $scope2.addMyName = function() {
+            // $scope.names.push($scope.name);
+            myService.addName($scope2.name)
+            $scope2.name = '';
+        };
+
+        $scope2.names = myService.items;
+
+    }]);
+</script>
+</body>
+</html>
