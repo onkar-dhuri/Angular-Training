@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>BootStrap One</title>
+    <!-- Bootstrap -->
+    <link href="../scripts/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../scripts/css/bootstrap-theme.css" rel="stylesheet">
+</head>
+<body ng-app="myApp">
+<div class="container">
+    <nav class="navbar navbar-inverse">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+            </div>
+            <div id="navbar" class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a ui-sref="sample">Home</a></li>
+                    <li><a ui-sref="state1">About</a></li>
+                    <li><a ui-sref="state2">Contact</a></li>
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </nav>
+</div>
+
+<div class="container">
+
+
+    <div ui-view>
+
+    </div>
+
+</div><!-- /.container -->
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="../scripts/js/bootstrap.min.js"></script>
+<script src="../scripts/angular.js"></script>
+<script src="../scripts/angular-ui-router.js"></script>
+
+<script>
+    var app = angular.module('myApp', ['ui.router']);
+
+
+    app.config(function($stateProvider, $urlRouterProvider){
+        $urlRouterProvider.otherwise("/home"); // by default route to state1
+
+        $stateProvider
+                .state('state1',{
+                    url:"/state1",
+                    templateUrl:"../Day-5/partials/state1.html"
+                })
+
+                .state('state1.list',{
+                    url:"/list",
+                    templateUrl:"../Day-5/partials/state1.list.html",
+                    controller:function($scope){
+                        $scope.items = ["item 1-1", "item 1-2", "item 1-3"]
+                    }
+                })
+
+                .state('state1.table',{
+                    url:"/table",
+                    templateUrl:"../Day-5/partials/state1.table.html",
+                    controller:function($scope){
+                        $scope.items = ["item 1-4", "item 1-5", "item 1-6"]
+                    }
+                })
+
+                .state('state1.dynamic',{
+                    url:"/dynamic/{id}",
+                    template:"<h1>This is dynamic {{text}}</h1>",
+                    controller:function($scope,$stateParams){
+                        $scope.text = $stateParams.id;
+                    }
+                })
+
+                .state('state2',{
+                    url:"/state2",
+                    templateUrl:"../Day-5/partials/state2.html"
+                })
+
+                .state('state2.list',{
+                    url:"/list",
+                    templateUrl:"../Day-5/partials/state2.list.html",
+                    controller:function($scope){
+                        //$scope.items = ["item 2-1", "item 2-2", "item 2-3"]
+                    }
+                })
+
+                .state('sample',{
+                    url:"/home",
+                    templateUrl:"../Day-5/partials/sample.html"
+                })
+    });
+</script>
+</body>
+</html>
